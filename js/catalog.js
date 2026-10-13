@@ -1,5 +1,5 @@
 /* =========================================================
-   Chromea — Catálogo público
+   Chromea — Catálogo público (carrusel)
    Lee data/config.json y data/products.json (estáticos)
    y renderiza la tienda. No requiere backend.
    ========================================================= */
@@ -13,12 +13,6 @@
     category: "Todos",
     query: ""
   };
-
-  function fmtPrice(n, config) {
-    if (typeof n !== "number") return "";
-    var symbol = (config && config.currencySymbol) || "$";
-    return symbol + n.toLocaleString("es-CO");
-  }
 
   function buildWhatsAppLink(config, message) {
     var number = (config.whatsappNumber || "").replace(/\D/g, "");
@@ -75,10 +69,12 @@
     if (!wrap) return;
     wrap.innerHTML = "";
 
+    if (categories.length < 2) { wrap.style.display = "none"; return; }
+    wrap.style.display = "flex";
+
     var all = document.createElement("button");
     all.className = "chip" + (state.category === "Todos" ? " active" : "");
     all.textContent = "Todos";
-    all.dataset.category = "Todos";
     all.addEventListener("click", function () { setCategory("Todos"); });
     wrap.appendChild(all);
 
@@ -86,7 +82,6 @@
       var chip = document.createElement("button");
       chip.className = "chip" + (state.category === cat ? " active" : "");
       chip.textContent = cat;
-      chip.dataset.category = cat;
       chip.addEventListener("click", function () { setCategory(cat); });
       wrap.appendChild(chip);
     });
@@ -95,7 +90,7 @@
   function setCategory(cat) {
     state.category = cat;
     renderChips(uniqueCategories(state.products));
-    renderGrid();
+    renderCarousel();
   }
 
   function matchesFilters(p) {
@@ -103,7 +98,6 @@
     var q = state.query.trim().toLowerCase();
     var inQuery = !q ||
       (p.name && p.name.toLowerCase().indexOf(q) !== -1) ||
-      (p.description && p.description.toLowerCase().indexOf(q) !== -1) ||
       (p.category && p.category.toLowerCase().indexOf(q) !== -1);
     return inCategory && inQuery;
   }
@@ -122,17 +116,16 @@
     if (lb) lb.classList.remove("open");
   }
 
-  function productCard(p, config) {
-    var card = document.createElement("div");
-    card.className = "product-card";
+  function slideEl(p, config) {
+    var slide = document.createElement("div");
+    slide.className = "carousel-slide";
 
     var media = document.createElement("div");
-    media.className = "product-media";
+    media.className = "slide-media" + (!p.inStock ? " is-out" : "");
 
     var img = document.createElement("img");
-    var firstImage = (p.images && p.images[0]) || "images/placeholder-generic.svg";
-    img.src = firstImage;
-    img.alt = p.name || "Producto Chromea";
+    img.src = p.image || "images/placeholder-generic.svg";
+    img.alt = p.name || "Accesorio Chromea";
     img.loading = "lazy";
     media.appendChild(img);
 
@@ -141,78 +134,98 @@
       badge.className = "badge badge-out";
       badge.textContent = "Agotado";
       media.appendChild(badge);
-    } else if (p.isNew) {
-      var nbadge = document.createElement("span");
-      nbadge.className = "badge";
-      nbadge.textContent = "Nuevo";
-      media.appendChild(nbadge);
     }
 
-    media.addEventListener("click", function () { openLightbox(firstImage, p.name); });
-    card.appendChild(media);
+    media.addEventListener("click", function () { openLightbox(img.src, p.name); });
+    slide.appendChild(media);
 
-    var info = document.createElement("div");
-    info.className = "product-info";
-
-    var cat = document.createElement("span");
-    cat.className = "product-category";
-    cat.textContent = p.category || "";
-    info.appendChild(cat);
-
-    var name = document.createElement("h3");
-    name.className = "product-name";
-    name.textContent = p.name || "";
-    info.appendChild(name);
-
-    if (config.showPrices && typeof p.price === "number") {
-      var price = document.createElement("div");
-      price.className = "product-price";
-      price.textContent = fmtPrice(p.price, config);
-      info.appendChild(price);
-    }
-
-    if (p.description) {
-      var desc = document.createElement("p");
-      desc.className = "product-desc";
-      desc.textContent = p.description;
-      info.appendChild(desc);
-    }
-
-    var order = document.createElement("a");
-    order.target = "_blank";
-    order.rel = "noopener";
+    var cta = document.createElement("a");
+    cta.target = "_blank";
+    cta.rel = "noopener";
     if (p.inStock) {
-      order.className = "product-order";
-      var msg = "Hola, vi el " + p.name + " en el catálogo de Chromea y quiero más información.";
-      order.href = buildWhatsAppLink(config, msg);
-      order.textContent = "Pedir por WhatsApp";
+      cta.className = "slide-cta";
+      var msg = p.name
+        ? "Hola, vi el " + p.name + " en el catálogo de Chromea y quiero más información."
+        : (config.whatsappDefaultMessage || "Hola, vi el catálogo de Chromea y quiero más información.");
+      cta.href = buildWhatsAppLink(config, msg);
+      cta.textContent = "Pedir por WhatsApp";
     } else {
-      order.className = "product-order disabled";
-      order.textContent = "Agotado";
-      order.removeAttribute("href");
+      cta.className = "slide-cta disabled";
+      cta.textContent = "Agotado";
     }
-    info.appendChild(order);
+    slide.appendChild(cta);
 
-    card.appendChild(info);
-    return card;
+    return slide;
   }
 
-  function renderGrid() {
-    var grid = document.getElementById("product-grid");
+  function updateCounter(filtered) {
+    var counter = document.getElementById("carousel-counter");
+    if (!counter) return;
+    counter.textContent = filtered.length > 0 ? ("1 / " + filtered.length) : "";
+  }
+
+  function renderCarousel() {
+    var track = document.getElementById("carousel-track");
     var empty = document.getElementById("empty-state");
-    if (!grid) return;
-    grid.innerHTML = "";
+    if (!track) return;
+    track.innerHTML = "";
+    track.scrollLeft = 0;
 
     var filtered = state.products.filter(matchesFilters);
 
     if (filtered.length === 0) {
       empty.style.display = "block";
+      updateCounter(filtered);
       return;
     }
     empty.style.display = "none";
 
     filtered.forEach(function (p) {
-      grid.appendChild(productCard(p, state.config));
+      track.appendChild(slideEl(p, state.config));
+    });
+
+    updateCounter(filtered);
+    wireCounterScroll(filtered.length);
+  }
+
+  function wireCounterScroll(total) {
+    var track = document.getElementById("carousel-track");
+    var counter = document.getElementById("carousel-counter");
+    if (!track || !counter) return;
+
+    var ticking = false;
+    track.onscroll = function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var slide = track.querySelector(".carousel-slide");
+        if (slide) {
+          var step = slide.offsetWidth + 22; // gap
+          var idx = Math.round(track.scrollLeft / step) + 1;
+          idx = Math.max(1, Math.min(total, idx));
+          counter.textContent = idx + " / " + total;
+        }
+        ticking = false;
+      });
+    };
+  }
+
+  function wireArrows() {
+    var track = document.getElementById("carousel-track");
+    var prev = document.getElementById("carousel-prev");
+    var next = document.getElementById("carousel-next");
+    if (!track || !prev || !next) return;
+
+    function step() {
+      var slide = track.querySelector(".carousel-slide");
+      return slide ? slide.offsetWidth + 22 : 300;
+    }
+
+    prev.addEventListener("click", function () {
+      track.scrollBy({ left: -step(), behavior: "smooth" });
+    });
+    next.addEventListener("click", function () {
+      track.scrollBy({ left: step(), behavior: "smooth" });
     });
   }
 
@@ -226,9 +239,11 @@
     if (search) {
       search.addEventListener("input", function (e) {
         state.query = e.target.value;
-        renderGrid();
+        renderCarousel();
       });
     }
+
+    wireArrows();
 
     Promise.all([
       fetch("data/config.json").then(function (r) { return r.json(); }),
@@ -240,15 +255,15 @@
       });
       applyConfig(state.config);
       renderChips(uniqueCategories(state.products));
-      renderGrid();
+      renderCarousel();
     }).catch(function (err) {
-      var grid = document.getElementById("product-grid");
-      if (grid) {
-        grid.innerHTML = "";
+      var track = document.getElementById("carousel-track");
+      if (track) {
+        track.innerHTML = "";
         var msg = document.createElement("div");
         msg.className = "empty-state";
         msg.textContent = "No se pudo cargar el catálogo. Si estás probando el sitio en tu computador, ábrelo con un servidor local (ver README) en lugar de abrir el archivo directamente.";
-        grid.appendChild(msg);
+        track.appendChild(msg);
       }
       console.error("Error cargando catálogo:", err);
     });

@@ -2,7 +2,9 @@
    Chromea — Panel de administración
    Lee y escribe data/config.json y data/products.json
    directamente en GitHub usando la Contents API del usuario.
-   Todo corre en el navegador: no hay servidor ni base de datos.
+   Cada producto es, en esencia, una foto (con nombre y
+   categoría opcionales) — todo corre en el navegador: no hay
+   servidor ni base de datos.
    ========================================================= */
 
 (function () {
@@ -15,8 +17,8 @@
   var products = [];
   var productsSha = null;
   var configSha = null;
-  var pendingImageFiles = []; // Files chosen for the product currently being edited
-  var existingImages = [];    // image paths already saved for the product being edited
+  var pendingImageFile = null; // new File chosen for the product being edited
+  var existingImage = null;    // image path already saved for the product being edited
 
   /* ---------------- helpers ---------------- */
 
@@ -40,7 +42,7 @@
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "")
-      .slice(0, 48) || "producto";
+      .slice(0, 48) || "foto";
   }
 
   function uniqueId(base) {
@@ -53,7 +55,7 @@
     return id;
   }
 
-  // UTF-8 safe base64 encode/decode (product descriptions have tildes, ñ, etc.)
+  // UTF-8 safe base64 encode/decode (nombres con tildes, ñ, etc.)
   function b64EncodeUnicode(str) {
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (_, p1) {
       return String.fromCharCode("0x" + p1);
@@ -170,7 +172,6 @@
 
   async function connect(owner, repo, branch, token) {
     session = { owner: owner, repo: repo, branch: branch || "main", token: token };
-    // Validate by requesting the repo itself
     var res = await fetch(API + "/repos/" + owner + "/" + repo, { headers: apiHeaders() });
     if (!res.ok) throw new Error(friendlyError(res.status));
     var repoJson = await res.json();
@@ -203,7 +204,6 @@
     $("s-heroHeadline").value = config.heroHeadline || "";
     $("s-heroSub").value = config.heroSubheadline || "";
     $("s-footerNote").value = config.footerNote || "";
-    $("s-showPrices").checked = config.showPrices !== false;
 
     window._fullConfig = config;
   }
@@ -221,8 +221,7 @@
         email: $("s-email").value.trim(),
         heroHeadline: $("s-heroHeadline").value.trim(),
         heroSubheadline: $("s-heroSub").value.trim(),
-        footerNote: $("s-footerNote").value.trim(),
-        showPrices: $("s-showPrices").checked
+        footerNote: $("s-footerNote").value.trim()
       });
       var result = await putTextFile("data/config.json", JSON.stringify(config, null, 2), configSha, "Admin: actualizar datos del sitio");
       configSha = result.content.sha;
@@ -247,33 +246,47 @@
     tbody.innerHTML = "";
     if (products.length === 0) {
       var tr = document.createElement("tr");
-      tr.innerHTML = '<td colspan="6" style="text-align:center; color:var(--c-slate); padding:24px;">Aún no hay productos. Crea el primero con "+ Nuevo producto".</td>';
+      tr.innerHTML = '<td colspan="6" style="text-align:center; color:var(--c-slate); padding:24px;">Aún no hay fotos. Sube la primera con "+ Nuevo producto".</td>';
       tbody.appendChild(tr);
       return;
     }
-    products.forEach(function (p) {
+    products.forEach(function (p, idx) {
       var tr = document.createElement("tr");
 
       var tdImg = document.createElement("td");
       var img = document.createElement("img");
       img.className = "thumb";
-      img.src = (p.images && p.images[0]) || "images/placeholder-generic.svg";
+      img.src = p.image || "images/placeholder-generic.svg";
       tdImg.appendChild(img);
 
       var tdName = document.createElement("td");
-      tdName.textContent = p.name || "";
+      tdName.textContent = p.name || "(sin nombre)";
 
       var tdCat = document.createElement("td");
-      tdCat.textContent = p.category || "";
-
-      var tdPrice = document.createElement("td");
-      tdPrice.textContent = typeof p.price === "number" ? "$" + p.price.toLocaleString("es-CO") : "—";
+      tdCat.textContent = p.category || "—";
 
       var tdStatus = document.createElement("td");
       var pill = document.createElement("span");
       pill.className = "status-pill " + (p.inStock ? "in" : "out");
       pill.textContent = p.inStock ? "Disponible" : "Agotado";
       tdStatus.appendChild(pill);
+
+      var tdOrder = document.createElement("td");
+      var orderWrap = document.createElement("div");
+      orderWrap.className = "row-actions";
+      var upBtn = document.createElement("button");
+      upBtn.className = "icon-btn";
+      upBtn.textContent = "↑";
+      upBtn.disabled = idx === 0;
+      upBtn.addEventListener("click", function () { moveProduct(idx, -1); });
+      var downBtn = document.createElement("button");
+      downBtn.className = "icon-btn";
+      downBtn.textContent = "↓";
+      downBtn.disabled = idx === products.length - 1;
+      downBtn.addEventListener("click", function () { moveProduct(idx, 1); });
+      orderWrap.appendChild(upBtn);
+      orderWrap.appendChild(downBtn);
+      tdOrder.appendChild(orderWrap);
 
       var tdActions = document.createElement("td");
       var actionsWrap = document.createElement("div");
@@ -296,32 +309,53 @@
       tr.appendChild(tdImg);
       tr.appendChild(tdName);
       tr.appendChild(tdCat);
-      tr.appendChild(tdPrice);
       tr.appendChild(tdStatus);
+      tr.appendChild(tdOrder);
       tr.appendChild(tdActions);
       tbody.appendChild(tr);
     });
   }
 
+  async function moveProduct(idx, dir) {
+    var target = idx + dir;
+    if (target < 0 || target >= products.length) return;
+    try {
+      var latest = await getFile("data/products.json");
+      products = latest.notFound ? [] : JSON.parse(latest.content);
+      productsSha = latest.sha;
+
+      var tmp = products[idx];
+      products[idx] = products[target];
+      products[target] = tmp;
+
+      var result = await putTextFile(
+        "data/products.json",
+        JSON.stringify(products, null, 2),
+        productsSha,
+        "Admin: reordenar catálogo"
+      );
+      productsSha = result.content.sha;
+      renderTable();
+      showToast("Orden actualizado. El catálogo se actualizará en ~1 minuto.");
+    } catch (e) {
+      showToast(e.message, true);
+    }
+  }
+
   /* ---------------- product form ---------------- */
 
   function openProductForm(p) {
-    pendingImageFiles = [];
-    existingImages = (p && p.images) ? p.images.slice() : [];
+    pendingImageFile = null;
+    existingImage = p ? p.image : null;
 
-    $("product-form-title").textContent = p ? "Editar producto" : "Nuevo producto";
+    $("product-form-title").textContent = p ? "Editar foto" : "Nueva foto";
     $("p-id").value = p ? p.id : "";
     $("p-name").value = p ? p.name || "" : "";
     $("p-category").value = p ? p.category || "" : "";
-    $("p-price").value = p && typeof p.price === "number" ? p.price : "";
-    $("p-sku").value = p ? p.sku || "" : "";
-    $("p-description").value = p ? p.description || "" : "";
-    $("p-colors").value = p && p.colors ? p.colors.join(", ") : "";
     $("p-inStock").checked = p ? !!p.inStock : true;
-    $("p-isNew").checked = p ? !!p.isNew : false;
-    $("p-images").value = "";
+    $("p-image").value = "";
 
-    renderImagePreviews();
+    renderImagePreview();
 
     $("product-form-card").style.display = "block";
     $("product-form-card").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -331,85 +365,57 @@
     $("product-form-card").style.display = "none";
   }
 
-  function renderImagePreviews() {
-    var wrap = $("p-image-previews");
+  function renderImagePreview() {
+    var wrap = $("p-image-preview");
     wrap.innerHTML = "";
 
-    existingImages.forEach(function (path, idx) {
-      var div = document.createElement("div");
-      div.className = "image-preview";
-      var img = document.createElement("img");
-      img.src = path;
-      var btn = document.createElement("button");
-      btn.textContent = "×";
-      btn.title = "Quitar imagen";
-      btn.addEventListener("click", function () {
-        existingImages.splice(idx, 1);
-        renderImagePreviews();
-      });
-      div.appendChild(img);
-      div.appendChild(btn);
-      wrap.appendChild(div);
-    });
+    var src = null;
+    if (pendingImageFile) {
+      src = URL.createObjectURL(pendingImageFile);
+    } else if (existingImage) {
+      src = existingImage;
+    }
+    if (!src) return;
 
-    pendingImageFiles.forEach(function (file, idx) {
-      var div = document.createElement("div");
-      div.className = "image-preview";
-      var img = document.createElement("img");
-      img.src = URL.createObjectURL(file);
-      var btn = document.createElement("button");
-      btn.textContent = "×";
-      btn.title = "Quitar imagen";
-      btn.addEventListener("click", function () {
-        pendingImageFiles.splice(idx, 1);
-        renderImagePreviews();
-      });
-      div.appendChild(img);
-      div.appendChild(btn);
-      wrap.appendChild(div);
-    });
+    var div = document.createElement("div");
+    div.className = "image-preview";
+    var img = document.createElement("img");
+    img.src = src;
+    div.appendChild(img);
+    wrap.appendChild(div);
   }
 
   async function saveProduct() {
     var btn = $("btn-save-product");
-    var name = $("p-name").value.trim();
-    if (!name) { showToast("El producto necesita un nombre.", true); return; }
+
+    if (!pendingImageFile && !existingImage) {
+      showToast("Selecciona una foto para este producto.", true);
+      return;
+    }
 
     btn.disabled = true;
     try {
-      // Re-fetch latest products.json right before writing to reduce conflicts
       var latest = await getFile("data/products.json");
       products = latest.notFound ? [] : JSON.parse(latest.content);
       productsSha = latest.sha;
 
-      var id = $("p-id").value || uniqueId(slugify(name));
+      var name = $("p-name").value.trim();
+      var id = $("p-id").value || uniqueId(slugify(name || ("foto-" + Date.now())));
       var isEditing = !!$("p-id").value;
 
-      // Upload any newly selected images
-      var uploadedPaths = [];
-      for (var i = 0; i < pendingImageFiles.length; i++) {
-        var file = pendingImageFiles[i];
-        var base64 = await fileToBase64(file);
-        var path = "images/" + id + "-" + Date.now() + "-" + i + "." + extensionOf(file.name);
-        await putBase64File(path, base64, "Admin: imagen para " + name);
-        uploadedPaths.push(path);
+      var imagePath = existingImage;
+      if (pendingImageFile) {
+        var base64 = await fileToBase64(pendingImageFile);
+        imagePath = "images/products/" + id + "-" + Date.now() + "." + extensionOf(pendingImageFile.name);
+        await putBase64File(imagePath, base64, "Admin: foto para " + (name || id));
       }
 
-      var images = existingImages.concat(uploadedPaths);
-      if (images.length === 0) images = ["images/placeholder-generic.svg"];
-
-      var priceVal = $("p-price").value;
       var productObj = {
         id: id,
         name: name,
-        category: $("p-category").value.trim() || "General",
-        price: priceVal === "" ? null : Number(priceVal),
-        sku: $("p-sku").value.trim(),
-        description: $("p-description").value.trim(),
-        colors: $("p-colors").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
-        images: images,
+        category: $("p-category").value.trim(),
+        image: imagePath,
         inStock: $("p-inStock").checked,
-        isNew: $("p-isNew").checked,
         createdAt: isEditing ? (products.find(function (p) { return p.id === id; }) || {}).createdAt || todayISO() : todayISO()
       };
 
@@ -424,11 +430,11 @@
         "data/products.json",
         JSON.stringify(products, null, 2),
         productsSha,
-        (isEditing ? "Admin: actualizar " : "Admin: agregar ") + name
+        (isEditing ? "Admin: actualizar " : "Admin: agregar ") + (name || id)
       );
       productsSha = result.content.sha;
 
-      showToast("Producto guardado. El catálogo se actualizará en ~1 minuto.");
+      showToast("Guardado. El catálogo se actualizará en ~1 minuto.");
       closeProductForm();
       renderTable();
     } catch (e) {
@@ -439,7 +445,7 @@
   }
 
   async function deleteProduct(p) {
-    if (!confirm('¿Eliminar "' + p.name + '" del catálogo? Esta acción no se puede deshacer desde el panel.')) return;
+    if (!confirm('¿Eliminar "' + (p.name || p.id) + '" del catálogo? Esta acción no se puede deshacer desde el panel.')) return;
     try {
       var latest = await getFile("data/products.json");
       products = latest.notFound ? [] : JSON.parse(latest.content);
@@ -451,10 +457,10 @@
         "data/products.json",
         JSON.stringify(products, null, 2),
         productsSha,
-        "Admin: eliminar " + p.name
+        "Admin: eliminar " + (p.name || p.id)
       );
       productsSha = result.content.sha;
-      showToast("Producto eliminado.");
+      showToast("Foto eliminada.");
       renderTable();
     } catch (e) {
       showToast(e.message, true);
@@ -505,9 +511,11 @@
     $("btn-cancel-product").addEventListener("click", closeProductForm);
     $("btn-save-product").addEventListener("click", saveProduct);
 
-    $("p-images").addEventListener("change", function (e) {
-      pendingImageFiles = pendingImageFiles.concat(Array.prototype.slice.call(e.target.files));
-      renderImagePreviews();
+    $("p-image").addEventListener("change", function (e) {
+      if (e.target.files && e.target.files[0]) {
+        pendingImageFile = e.target.files[0];
+        renderImagePreview();
+      }
     });
   }
 

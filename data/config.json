@@ -1,15 +1,12 @@
 {
   "siteName": "Chromea",
   "tagline": "Accesorios con identidad propia",
-  "description": "Catálogo oficial de accesorios Chromea. Bolsos y complementos diseñados con una estética minimalista y atemporal.",
+  "description": "Catálogo oficial de accesorios Chromea.",
   "whatsappNumber": "573000000000",
   "whatsappDefaultMessage": "Hola, vi el catálogo de Chromea y quiero más información.",
   "instagramHandle": "@chromea.accesorios",
   "instagramUrl": "https://instagram.com/chromea.accesorios",
   "email": "",
-  "currency": "COP",
-  "currencySymbol": "$",
-  "showPrices": true,
   "heroHeadline": "Accesorios Chromea",
   "heroSubheadline": "Piezas atemporales, hechas para acompañar cada historia.",
   "footerNote": "Hecho a mano con atención al detalle · Envíos a toda Colombia"

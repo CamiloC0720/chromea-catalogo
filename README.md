@@ -1,12 +1,46 @@
 # Catálogo Chromea
 
 Catálogo web gratuito para Chromea, hosteado en GitHub Pages ($0 de costo) con un
-panel de administración para agregar, editar y eliminar productos sin tocar código.
+panel de administración para agregar, editar y eliminar fotos de producto sin tocar
+código.
+
+El catálogo es un **carrusel de fotos**: cada producto es una sola imagen (la que tú
+diseñas, con el nombre y el precio ya incluidos en la foto), así que la imagen es lo
+único que importa — no hay tarjetas con texto superpuesto. El nombre y la categoría
+que opcionalmente le pongas a cada foto en el admin solo se usan para personalizar el
+mensaje de WhatsApp y para los filtros, pero nunca se muestran encima de la imagen.
 
 No hay servidor ni base de datos: el catálogo es un sitio estático (HTML/CSS/JS) que
 lee dos archivos (`data/config.json` y `data/products.json`), y el panel de admin
-escribe en esos mismos archivos directamente en tu repositorio de GitHub usando la
-API de GitHub desde el navegador.
+escribe en esos mismos archivos (y sube las fotos a `images/products/`) directamente
+en tu repositorio de GitHub usando la API de GitHub desde el navegador.
+
+---
+
+## 0. Si ya tenías el sitio publicado y solo vienes a actualizarlo
+
+Si ya creaste el repositorio y activaste GitHub Pages con una versión anterior de
+este catálogo, no hace falta repetir todo desde cero — solo reemplaza estos archivos
+(sigue usando "Add file → Upload files" o las URLs `.../upload/main/<carpeta>` como
+la primera vez; subir un archivo con el mismo nombre lo reemplaza automáticamente):
+
+- `index.html` (raíz) — ahora es un carrusel en vez de un grid de tarjetas.
+- `admin.html` (raíz) — formulario de producto simplificado (solo foto + nombre +
+  categoría opcionales + disponible).
+- `css/styles.css`
+- `js/catalog.js`
+- `js/admin.js`
+- `data/products.json` — ya trae cargadas tus 17 fotos reales (collares, pulseras,
+  aretes y anillos).
+- `data/config.json`
+
+Y sube la carpeta nueva con las fotos reales:
+- `images/products/` (17 archivos `.jpg`) → entra a
+  `https://github.com/TU-USUARIO/chromea-catalogo/upload/main/images/products` y
+  arrastra los 17 archivos ahí.
+
+Los archivos viejos `images/placeholder-*.svg` ya no se usan — los puedes dejar ahí
+(no estorban) o borrarlos desde GitHub si quieres dejar el repo limpio.
 
 ---
 
@@ -84,10 +118,12 @@ producto, subir foto, etc). Es gratis y lo creas una sola vez.
 4. En **Datos del sitio** actualiza el número de WhatsApp real (solo números, con
    indicativo de país, ej. `573001234567`), tu usuario de Instagram y los textos del
    encabezado. Click **Guardar datos del sitio**.
-5. En **Productos**, click **+ Nuevo producto** para agregar los productos reales
-   de Chromea con sus fotos, o **Editar/Eliminar** sobre los productos de ejemplo
-   que ya vienen cargados (Glacial Indifference, Lora, Britanny, Mini Pouch) para
-   reemplazarlos por tu catálogo real.
+5. En **Productos** ya vienen cargadas tus 17 fotos reales. Desde ahí puedes:
+   - **+ Nuevo producto**: sube una foto nueva (con nombre y precio ya incluidos en
+     la imagen, como las demás). El nombre y la categoría son opcionales.
+   - **Editar**: cambiar el nombre, la categoría, la disponibilidad, o reemplazar la foto.
+   - **Eliminar**: la quita del catálogo.
+   - **↑ / ↓**: cambia el orden en que aparece dentro del carrusel.
 
 Cada cambio queda guardado como un commit en tu repositorio y el catálogo público
 se actualiza automáticamente en aproximadamente 1 minuto (GitHub Pages necesita
@@ -139,18 +175,24 @@ consistente.
 ## Estructura de archivos
 
 ```
-index.html          → Catálogo público
-admin.html           → Panel de administración
-css/styles.css       → Estilos de marca (colores, tipografías)
-js/catalog.js         → Lógica del catálogo público (filtros, búsqueda, WhatsApp)
-js/admin.js           → Lógica del panel (login con GitHub, guardar productos/imágenes)
-data/config.json      → Datos del sitio (WhatsApp, Instagram, textos)
-data/products.json    → Catálogo de productos
-images/                → Fotos de productos (las que subas desde el admin caen aquí)
-assets/favicon.svg    → Ícono del sitio (monograma CR)
+index.html             → Catálogo público (carrusel)
+admin.html             → Panel de administración
+css/styles.css         → Estilos de marca (colores, tipografías)
+js/catalog.js          → Lógica del carrusel público (filtros, búsqueda, WhatsApp)
+js/admin.js            → Lógica del panel (login con GitHub, guardar fotos/orden)
+data/config.json       → Datos del sitio (WhatsApp, Instagram, textos)
+data/products.json     → Catálogo (cada entrada es una foto + nombre/categoría opcionales)
+images/products/       → Fotos de producto (las que subas desde el admin caen aquí)
+assets/favicon.svg     → Ícono del sitio (monograma CR)
 ```
 
 ## Preguntas frecuentes
+
+**¿Puedo subir varias fotos del mismo producto (distintos ángulos)?**
+El admin maneja una foto por entrada del catálogo. Si quieres mostrar el mismo
+producto desde dos ángulos, súbelo dos veces como dos entradas (puedes repetir el
+mismo nombre) — aparecerán una junto a la otra en el carrusel si las dejas en
+orden consecutivo.
 
 **¿Esto tiene algún costo?**
 No. GitHub Pages es gratis para repositorios públicos, y el panel de administración

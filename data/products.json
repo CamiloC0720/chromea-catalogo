@@ -1,62 +1,19 @@
 [
-  {
-    "id": "glacial-indifference",
-    "name": "Bolso Glacial Indifference",
-    "category": "Bolsos",
-    "price": 180000,
-    "sku": "CR-GI-01",
-    "description": "Bolso de mano en tonos neutros con detalle de asa en cuero vegano negro. Estructura rígida y acabado mate.",
-    "images": [
-      "images/placeholder-glacial-indifference.svg"
-    ],
-    "colors": ["Negro", "Blanco"],
-    "inStock": true,
-    "isNew": true,
-    "createdAt": "2026-10-13"
-  },
-  {
-    "id": "lora",
-    "name": "Bolso Lora",
-    "category": "Bolsos",
-    "price": 165000,
-    "sku": "CR-LO-01",
-    "description": "Bolso compacto de uso diario, silueta minimalista con monograma CR grabado en el dije frontal.",
-    "images": [
-      "images/placeholder-lora.svg"
-    ],
-    "colors": ["Negro"],
-    "inStock": true,
-    "isNew": false,
-    "createdAt": "2026-09-01"
-  },
-  {
-    "id": "britanny",
-    "name": "Bolso Britanny",
-    "category": "Bolsos",
-    "price": 195000,
-    "sku": "CR-BR-01",
-    "description": "Edición con estampado gráfico blanco y negro, asa tipo tote en cinta reforzada. Incluye dije colgante con monograma.",
-    "images": [
-      "images/placeholder-britanny.svg"
-    ],
-    "colors": ["Blanco/Negro"],
-    "inStock": true,
-    "isNew": true,
-    "createdAt": "2026-10-10"
-  },
-  {
-    "id": "mini-pouch-vino",
-    "name": "Mini Pouch Vino",
-    "category": "Billeteras",
-    "price": 65000,
-    "sku": "CR-MP-02",
-    "description": "Monedero mini en gamuza color vino, ideal para llevar lo esencial. Cierre de cordón ajustable.",
-    "images": [
-      "images/placeholder-pouch.svg"
-    ],
-    "colors": ["Vino"],
-    "inStock": false,
-    "isNew": false,
-    "createdAt": "2026-08-15"
-  }
+  { "id": "collar-gota", "name": "Collar Gota", "category": "Collares", "image": "images/products/collar-gota.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "collar-doble-plateado", "name": "Collar Doble Plateado", "category": "Collares", "image": "images/products/collar-doble-plateado.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "collar-corbata", "name": "Collar Corbata", "category": "Collares", "image": "images/products/collar-corbata.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "pulsera-delgada", "name": "Pulsera Delgada", "category": "Pulseras", "image": "images/products/pulsera-delgada.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "pulsera-flores", "name": "Pulsera Flores", "category": "Pulseras", "image": "images/products/pulsera-flores.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-set-mini-hoop", "name": "Set Mini Hoop", "category": "Aretes", "image": "images/products/aretes-set-mini-hoop.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-set-x3-plateado", "name": "Set x3 Plateado", "category": "Aretes", "image": "images/products/aretes-set-x3-plateado.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-corazon", "name": "Aretes Corazón", "category": "Aretes", "image": "images/products/aretes-corazon.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-curva", "name": "Aretes Curva", "category": "Aretes", "image": "images/products/aretes-curva.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-flor", "name": "Aretes Flor", "category": "Aretes", "image": "images/products/aretes-flor.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-tipo-nudo", "name": "Aretes Tipo Nudo", "category": "Aretes", "image": "images/products/aretes-tipo-nudo.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-topo-piedra", "name": "Aretes Topo Piedra", "category": "Aretes", "image": "images/products/aretes-topo-piedra.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-topo-triple", "name": "Aretes Topo Triple", "category": "Aretes", "image": "images/products/aretes-topo-triple.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "aretes-tortuga", "name": "Aretes Tortuga", "category": "Aretes", "image": "images/products/aretes-tortuga.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "anillo-corazon", "name": "Anillo Corazón", "category": "Anillos", "image": "images/products/anillo-corazon.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "anillo-espirales", "name": "Anillo Espirales", "category": "Anillos", "image": "images/products/anillo-espirales.jpg", "inStock": true, "createdAt": "2026-10-13" },
+  { "id": "anillo-ondas", "name": "Anillo Ondas", "category": "Anillos", "image": "images/products/anillo-ondas.jpg", "inStock": true, "createdAt": "2026-10-13" }
 ]

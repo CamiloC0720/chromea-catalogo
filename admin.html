@@ -124,11 +124,6 @@
         <input type="text" id="s-footerNote">
       </div>
 
-      <div class="checkbox-row">
-        <input type="checkbox" id="s-showPrices">
-        <label for="s-showPrices">Mostrar precios en el catálogo</label>
-      </div>
-
       <button class="btn-admin" id="btn-save-settings">Guardar datos del sitio</button>
     </div>
 
@@ -147,8 +142,8 @@
               <th></th>
               <th>Nombre</th>
               <th>Categoría</th>
-              <th>Precio</th>
               <th>Estado</th>
+              <th>Orden</th>
               <th></th>
             </tr>
           </thead>
@@ -159,59 +154,40 @@
 
     <!-- ---------- Product form ---------- -->
     <div class="card" id="product-form-card" style="display:none;">
-      <h3 id="product-form-title">Nuevo producto</h3>
+      <h3 id="product-form-title">Nueva foto</h3>
+      <p class="hint">
+        La foto es lo único obligatorio — así como la diseñas, con nombre y precio
+        incluidos en la imagen, se ve en el catálogo. El nombre de abajo es opcional:
+        solo se usa para personalizar el mensaje de WhatsApp (ej. "Hola, vi el Collar
+        Gota...") y no se muestra en el sitio.
+      </p>
 
       <input type="hidden" id="p-id">
 
-      <div class="field-row">
-        <div class="field">
-          <label for="p-name">Nombre</label>
-          <input type="text" id="p-name">
-        </div>
-        <div class="field">
-          <label for="p-category">Categoría</label>
-          <input type="text" id="p-category" placeholder="ej. Bolsos">
-        </div>
+      <div class="field">
+        <label for="p-image">Foto del producto</label>
+        <input type="file" id="p-image" accept="image/*">
+        <div class="image-preview-row" id="p-image-preview"></div>
       </div>
 
       <div class="field-row">
         <div class="field">
-          <label for="p-price">Precio (COP)</label>
-          <input type="number" id="p-price" min="0" step="1000">
+          <label for="p-name">Nombre (opcional, para el mensaje de WhatsApp)</label>
+          <input type="text" id="p-name" placeholder="ej. Collar Gota">
         </div>
         <div class="field">
-          <label for="p-sku">SKU (opcional)</label>
-          <input type="text" id="p-sku">
+          <label for="p-category">Categoría (opcional, para los filtros)</label>
+          <input type="text" id="p-category" placeholder="ej. Collares">
         </div>
-      </div>
-
-      <div class="field">
-        <label for="p-description">Descripción</label>
-        <textarea id="p-description"></textarea>
-      </div>
-
-      <div class="field">
-        <label for="p-colors">Colores disponibles (separados por coma)</label>
-        <input type="text" id="p-colors" placeholder="Negro, Blanco">
-      </div>
-
-      <div class="field">
-        <label for="p-images">Imágenes</label>
-        <input type="file" id="p-images" accept="image/*" multiple>
-        <div class="image-preview-row" id="p-image-previews"></div>
       </div>
 
       <div class="checkbox-row">
         <input type="checkbox" id="p-inStock" checked>
         <label for="p-inStock">Disponible (en stock)</label>
       </div>
-      <div class="checkbox-row">
-        <input type="checkbox" id="p-isNew">
-        <label for="p-isNew">Marcar como "Nuevo"</label>
-      </div>
 
       <div class="admin-actions">
-        <button class="btn-admin" id="btn-save-product">Guardar producto</button>
+        <button class="btn-admin" id="btn-save-product">Guardar foto</button>
         <button class="btn-admin secondary" id="btn-cancel-product">Cancelar</button>
       </div>
     </div>
