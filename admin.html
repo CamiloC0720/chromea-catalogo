@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chromea — Panel de administración</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&family=Alex+Brush&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="admin-body">
+
+<div class="admin-shell">
+
+  <div class="admin-header">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">CR</span>
+      <span class="brand-word">CHROMEA</span>
+    </a>
+    <span class="admin-title">Panel de administración</span>
+  </div>
+
+  <!-- ===================== LOGIN GATE ===================== -->
+  <div id="login-gate" class="login-gate">
+    <div class="card">
+      <h3>Conectar con GitHub</h3>
+      <p class="hint">
+        Este panel edita el catálogo directamente en tu repositorio de GitHub (sin servidor, sin costo).
+        Necesitas un <strong>token de acceso personal "fine-grained"</strong> con permiso de lectura y
+        escritura de <em>Contents</em>, limitado solo a este repositorio. El token se guarda únicamente
+        en este navegador — nunca se envía a ningún lugar excepto a GitHub. Revisa el README para la guía
+        paso a paso de cómo crearlo.
+      </p>
+
+      <div class="field">
+        <label for="f-owner">Usuario u organización de GitHub</label>
+        <input type="text" id="f-owner" placeholder="ej. camilo-dev">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="f-repo">Repositorio</label>
+          <input type="text" id="f-repo" placeholder="ej. chromea-catalogo">
+        </div>
+        <div class="field">
+          <label for="f-branch">Rama</label>
+          <input type="text" id="f-branch" placeholder="main">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-token">Token de acceso personal (fine-grained)</label>
+        <input type="password" id="f-token" placeholder="github_pat_...">
+      </div>
+
+      <div class="admin-actions">
+        <button class="btn-admin" id="btn-connect">Conectar</button>
+        <span id="connect-status" style="font-size:12.5px; color:var(--c-slate); align-self:center;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD (hidden until connected) ===================== -->
+  <div id="dashboard" style="display:none;">
+
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="font-size:13px; color:var(--c-slate);">
+        Conectado a <strong id="repo-label" style="color:var(--c-charcoal);"></strong>
+      </div>
+      <button class="btn-admin secondary" id="btn-disconnect">Desconectar</button>
+    </div>
+
+    <!-- ---------- Settings ---------- -->
+    <div class="card">
+      <h3>Datos del sitio</h3>
+      <p class="hint">Estos campos controlan el encabezado, el WhatsApp de pedidos y el pie de página del catálogo.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="s-siteName">Nombre del sitio</label>
+          <input type="text" id="s-siteName">
+        </div>
+        <div class="field">
+          <label for="s-whatsapp">WhatsApp (solo números, con indicativo)</label>
+          <input type="text" id="s-whatsapp" placeholder="573001234567">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="s-waMessage">Mensaje general de WhatsApp</label>
+        <input type="text" id="s-waMessage">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="s-ig">Usuario de Instagram (texto)</label>
+          <input type="text" id="s-ig" placeholder="@chromea.accesorios">
+        </div>
+        <div class="field">
+          <label for="s-igUrl">Enlace de Instagram</label>
+          <input type="text" id="s-igUrl" placeholder="https://instagram.com/...">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="s-email">Correo (opcional)</label>
+        <input type="email" id="s-email">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="s-heroHeadline">Título principal (hero)</label>
+          <input type="text" id="s-heroHeadline">
+        </div>
+        <div class="field">
+          <label for="s-heroSub">Subtítulo (hero)</label>
+          <input type="text" id="s-heroSub">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="s-footerNote">Nota del pie de página / barra superior</label>
+        <input type="text" id="s-footerNote">
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="s-showPrices">
+        <label for="s-showPrices">Mostrar precios en el catálogo</label>
+      </div>
+
+      <button class="btn-admin" id="btn-save-settings">Guardar datos del sitio</button>
+    </div>
+
+    <!-- ---------- Product list ---------- -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:10px;">
+        <h3 style="margin:0;">Productos</h3>
+        <button class="btn-admin" id="btn-new-product">+ Nuevo producto</button>
+      </div>
+      <p class="hint">Los cambios se publican en tu repositorio y el catálogo se actualiza en aprox. 1 minuto.</p>
+
+      <div style="overflow-x:auto;">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ---------- Product form ---------- -->
+    <div class="card" id="product-form-card" style="display:none;">
+      <h3 id="product-form-title">Nuevo producto</h3>
+
+      <input type="hidden" id="p-id">
+
+      <div class="field-row">
+        <div class="field">
+          <label for="p-name">Nombre</label>
+          <input type="text" id="p-name">
+        </div>
+        <div class="field">
+          <label for="p-category">Categoría</label>
+          <input type="text" id="p-category" placeholder="ej. Bolsos">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="p-price">Precio (COP)</label>
+          <input type="number" id="p-price" min="0" step="1000">
+        </div>
+        <div class="field">
+          <label for="p-sku">SKU (opcional)</label>
+          <input type="text" id="p-sku">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="p-description">Descripción</label>
+        <textarea id="p-description"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="p-colors">Colores disponibles (separados por coma)</label>
+        <input type="text" id="p-colors" placeholder="Negro, Blanco">
+      </div>
+
+      <div class="field">
+        <label for="p-images">Imágenes</label>
+        <input type="file" id="p-images" accept="image/*" multiple>
+        <div class="image-preview-row" id="p-image-previews"></div>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="p-inStock" checked>
+        <label for="p-inStock">Disponible (en stock)</label>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="p-isNew">
+        <label for="p-isNew">Marcar como "Nuevo"</label>
+      </div>
+
+      <div class="admin-actions">
+        <button class="btn-admin" id="btn-save-product">Guardar producto</button>
+        <button class="btn-admin secondary" id="btn-cancel-product">Cancelar</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

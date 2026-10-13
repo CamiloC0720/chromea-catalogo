@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chromea — Catálogo de Accesorios</title>
+<meta name="description" content="Catálogo oficial de accesorios Chromea. Bolsos y complementos con identidad propia.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&family=Alex+Brush&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Chromea — Catálogo de Accesorios">
+<meta property="og:description" content="Bolsos y accesorios con identidad propia. Haz tu pedido directo por WhatsApp.">
+<meta property="og:type" content="website">
+</head>
+<body>
+
+<div class="topbar" id="topbar-note">Envíos a toda Colombia · Pedidos por WhatsApp</div>
+
+<header class="site-header">
+  <div class="container">
+    <a href="#top" class="brand">
+      <span class="brand-mark">CR</span>
+      <span class="brand-word">CHROMEA</span>
+      <span class="brand-script">Chromea</span>
+    </a>
+    <nav class="main-nav">
+      <div class="main-nav-links" style="display:flex; gap:28px;">
+        <a href="#top">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+      <a class="nav-whatsapp" id="nav-whatsapp" href="#" target="_blank" rel="noopener">
+        Pedir por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="container">
+    <span class="hero-mark">Chromea Accesorios</span>
+    <h1 id="hero-headline">Accesorios Chromea</h1>
+    <p id="hero-sub">Piezas atemporales, hechas para acompañar cada historia.</p>
+    <div class="hero-cta">
+      <a href="#catalogo" class="btn btn-primary">Ver catálogo</a>
+      <a class="btn btn-outline" id="hero-whatsapp" href="#" target="_blank" rel="noopener">Escríbenos</a>
+    </div>
+  </div>
+</section>
+
+<section class="catalog-section" id="catalogo">
+  <div class="container">
+    <div class="section-heading">
+      <span class="eyebrow">Colección</span>
+      <h2>Nuestro catálogo</h2>
+    </div>
+
+    <div class="filters-bar">
+      <div class="chip-group" id="category-chips">
+        <button class="chip active" data-category="Todos">Todos</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar producto...">
+      </div>
+    </div>
+
+    <div class="product-grid" id="product-grid"></div>
+    <div class="empty-state" id="empty-state" style="display:none;">No encontramos productos con ese filtro.</div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">&times;</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
+
+<footer class="site-footer" id="contacto">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <span class="brand-mark">CR</span>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <a href="#top">Inicio</a>
+        <a href="#catalogo">Catálogo</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <a id="footer-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp</a>
+        <a id="footer-instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+        <p id="footer-email" style="display:none;"></p>
+      </div>
+      <div class="footer-col">
+        <h4>Chromea</h4>
+        <p id="footer-note">Hecho con atención al detalle.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year"></span> Chromea Accesorios. Todos los derechos reservados.</span>
+      <span>Diseñado con identidad propia</span>
+    </div>
+  </div>
+</footer>
+
+<a class="whatsapp-float" id="float-whatsapp" href="#" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 32 32" fill="#fff"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.697 4.61 1.903 6.48L4 29l7.72-1.86A11.93 11.93 0 0 0 16.001 27C22.63 27 28 21.627 28 15S22.63 3 16.001 3zm0 21.6c-1.96 0-3.79-.55-5.35-1.5l-.382-.228-4.59 1.105 1.123-4.47-.25-.39A9.56 9.56 0 0 1 6.4 15c0-5.302 4.3-9.6 9.601-9.6S25.6 9.698 25.6 15s-4.3 9.6-9.6 9.6zm5.27-7.19c-.288-.144-1.705-.84-1.97-.936-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.128-.168.192-.336.216-.624.072-.288-.144-1.215-.448-2.314-1.428-.856-.763-1.434-1.705-1.602-1.993-.168-.288-.018-.444.126-.587.13-.129.288-.336.432-.504.144-.168.192-.288.288-.48.096-.192.048-.36-.024-.504-.072-.144-.648-1.563-.888-2.14-.234-.562-.472-.486-.648-.495l-.552-.01c-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.4 0 1.416 1.032 2.784 1.176 2.976.144.192 2.03 3.1 4.92 4.347.688.297 1.224.474 1.642.606.69.22 1.317.189 1.814.115.553-.083 1.705-.697 1.945-1.37.24-.672.24-1.248.168-1.37-.072-.12-.264-.192-.552-.336z"/></svg>
+</a>
+
+<script src="js/catalog.js"></script>
+</body>
+</html>

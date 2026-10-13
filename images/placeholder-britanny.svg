@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#2A2A2E"/>
+  <path d="M0 400 L160 400 L400 220 L400 0 Z" fill="#FFFFFF" opacity="0.06"/>
+  <circle cx="200" cy="160" r="54" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.8"/>
+  <text x="200" y="178" font-family="Georgia, 'Times New Roman', serif" font-size="46" fill="#FFFFFF" text-anchor="middle">CR</text>
+  <text x="200" y="260" font-family="Arial, sans-serif" font-size="15" letter-spacing="3" fill="#FFFFFF" text-anchor="middle" opacity="0.9">BRITANNY</text>
+  <text x="200" y="285" font-family="Arial, sans-serif" font-size="11" letter-spacing="2" fill="#FFFFFF" text-anchor="middle" opacity="0.6">CHROMEA ACCESORIOS</text>
+</svg>

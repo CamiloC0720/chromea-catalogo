@@ -1,0 +1,62 @@
+[
+  {
+    "id": "glacial-indifference",
+    "name": "Bolso Glacial Indifference",
+    "category": "Bolsos",
+    "price": 180000,
+    "sku": "CR-GI-01",
+    "description": "Bolso de mano en tonos neutros con detalle de asa en cuero vegano negro. Estructura rígida y acabado mate.",
+    "images": [
+      "images/placeholder-glacial-indifference.svg"
+    ],
+    "colors": ["Negro", "Blanco"],
+    "inStock": true,
+    "isNew": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "lora",
+    "name": "Bolso Lora",
+    "category": "Bolsos",
+    "price": 165000,
+    "sku": "CR-LO-01",
+    "description": "Bolso compacto de uso diario, silueta minimalista con monograma CR grabado en el dije frontal.",
+    "images": [
+      "images/placeholder-lora.svg"
+    ],
+    "colors": ["Negro"],
+    "inStock": true,
+    "isNew": false,
+    "createdAt": "2026-09-01"
+  },
+  {
+    "id": "britanny",
+    "name": "Bolso Britanny",
+    "category": "Bolsos",
+    "price": 195000,
+    "sku": "CR-BR-01",
+    "description": "Edición con estampado gráfico blanco y negro, asa tipo tote en cinta reforzada. Incluye dije colgante con monograma.",
+    "images": [
+      "images/placeholder-britanny.svg"
+    ],
+    "colors": ["Blanco/Negro"],
+    "inStock": true,
+    "isNew": true,
+    "createdAt": "2026-10-10"
+  },
+  {
+    "id": "mini-pouch-vino",
+    "name": "Mini Pouch Vino",
+    "category": "Billeteras",
+    "price": 65000,
+    "sku": "CR-MP-02",
+    "description": "Monedero mini en gamuza color vino, ideal para llevar lo esencial. Cierre de cordón ajustable.",
+    "images": [
+      "images/placeholder-pouch.svg"
+    ],
+    "colors": ["Vino"],
+    "inStock": false,
+    "isNew": false,
+    "createdAt": "2026-08-15"
+  }
+]
