@@ -59,24 +59,29 @@
       <h2>Nuestro catálogo</h2>
     </div>
 
-    <div class="chip-group" id="category-chips">
-      <button class="chip active" data-category="Todos">Todos</button>
-    </div>
-
-    <div class="stage-wrap">
-      <div class="stage-frame" id="stage-frame">
-        <img src="" alt="" id="stage-img">
-        <span class="badge badge-out" id="stage-badge" style="display:none;">Agotado</span>
-        <button class="stage-nav-btn stage-nav-prev" id="stage-prev" aria-label="Anterior">&#8249;</button>
-        <button class="stage-nav-btn stage-nav-next" id="stage-next" aria-label="Siguiente">&#8250;</button>
+    <div class="filters-bar">
+      <div class="chip-group" id="category-chips">
+        <button class="chip active" data-category="Todos">Todos</button>
       </div>
-      <div class="stage-counter" id="stage-counter"></div>
-      <a class="stage-cta" id="stage-cta" href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar producto...">
+      </div>
     </div>
 
+    <div class="carousel-wrap">
+      <button class="carousel-arrow" id="carousel-prev" aria-label="Anterior">&#8249;</button>
+      <div class="carousel-track" id="carousel-track"></div>
+      <button class="carousel-arrow" id="carousel-next" aria-label="Siguiente">&#8250;</button>
+    </div>
+    <div class="carousel-counter" id="carousel-counter"></div>
     <div class="empty-state" id="empty-state" style="display:none;">No encontramos productos con ese filtro.</div>
   </div>
 </section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">&times;</button>
+  <img src="" alt="" id="lightbox-img">
+</div>
 
 <footer class="site-footer" id="contacto">
   <div class="container">

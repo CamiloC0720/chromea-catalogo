@@ -1,5 +1,5 @@
 /* =========================================================
-   Chromea — Catálogo público (visor de una foto a la vez)
+   Chromea — Catálogo público (carrusel)
    Lee data/config.json y data/products.json (estáticos)
    y renderiza la tienda. No requiere backend.
    ========================================================= */
@@ -11,8 +11,7 @@
     config: null,
     products: [],
     category: "Todos",
-    items: [],   // productos filtrados por categoría actual
-    index: 0
+    query: ""
   };
 
   function buildWhatsAppLink(config, message) {
@@ -90,125 +89,161 @@
 
   function setCategory(cat) {
     state.category = cat;
-    state.index = 0;
     renderChips(uniqueCategories(state.products));
-    rebuildItems();
-    renderStage(false);
+    renderCarousel();
   }
 
-  function rebuildItems() {
-    state.items = state.products.filter(function (p) {
-      return state.category === "Todos" || p.category === state.category;
-    });
-    if (state.index >= state.items.length) state.index = 0;
+  function matchesFilters(p) {
+    var inCategory = state.category === "Todos" || p.category === state.category;
+    var q = state.query.trim().toLowerCase();
+    var inQuery = !q ||
+      (p.name && p.name.toLowerCase().indexOf(q) !== -1) ||
+      (p.category && p.category.toLowerCase().indexOf(q) !== -1);
+    return inCategory && inQuery;
   }
 
-  function go(delta) {
-    if (state.items.length === 0) return;
-    state.index = (state.index + delta + state.items.length) % state.items.length;
-    renderStage(true);
+  function openLightbox(src, alt) {
+    var lb = document.getElementById("lightbox");
+    var img = document.getElementById("lightbox-img");
+    if (!lb || !img) return;
+    img.src = src;
+    img.alt = alt || "";
+    lb.classList.add("open");
   }
 
-  function renderStage(animate) {
-    var frame = document.getElementById("stage-frame");
-    var img = document.getElementById("stage-img");
-    var badge = document.getElementById("stage-badge");
-    var counter = document.getElementById("stage-counter");
-    var cta = document.getElementById("stage-cta");
+  function closeLightbox() {
+    var lb = document.getElementById("lightbox");
+    if (lb) lb.classList.remove("open");
+  }
+
+  function slideEl(p, config) {
+    var slide = document.createElement("div");
+    slide.className = "carousel-slide";
+
+    var media = document.createElement("div");
+    media.className = "slide-media" + (!p.inStock ? " is-out" : "");
+
+    var img = document.createElement("img");
+    img.src = p.image || "images/placeholder-generic.svg";
+    img.alt = p.name || "Accesorio Chromea";
+    img.loading = "lazy";
+    media.appendChild(img);
+
+    if (!p.inStock) {
+      var badge = document.createElement("span");
+      badge.className = "badge badge-out";
+      badge.textContent = "Agotado";
+      media.appendChild(badge);
+    }
+
+    media.addEventListener("click", function () { openLightbox(img.src, p.name); });
+    slide.appendChild(media);
+
+    var cta = document.createElement("a");
+    cta.target = "_blank";
+    cta.rel = "noopener";
+    if (p.inStock) {
+      cta.className = "slide-cta";
+      var msg = p.name
+        ? "Hola, vi el " + p.name + " en el catálogo de Chromea y quiero más información."
+        : (config.whatsappDefaultMessage || "Hola, vi el catálogo de Chromea y quiero más información.");
+      cta.href = buildWhatsAppLink(config, msg);
+      cta.textContent = "Pedir por WhatsApp";
+    } else {
+      cta.className = "slide-cta disabled";
+      cta.textContent = "Agotado";
+    }
+    slide.appendChild(cta);
+
+    return slide;
+  }
+
+  function updateCounter(filtered) {
+    var counter = document.getElementById("carousel-counter");
+    if (!counter) return;
+    counter.textContent = filtered.length > 0 ? ("1 / " + filtered.length) : "";
+  }
+
+  function renderCarousel() {
+    var track = document.getElementById("carousel-track");
     var empty = document.getElementById("empty-state");
+    if (!track) return;
+    track.innerHTML = "";
+    track.scrollLeft = 0;
 
-    if (!frame || !img) return;
+    var filtered = state.products.filter(matchesFilters);
 
-    if (state.items.length === 0) {
-      state.config && (frame.style.display = "none");
-      frame.style.display = "none";
-      counter.textContent = "";
-      cta.style.display = "none";
+    if (filtered.length === 0) {
       empty.style.display = "block";
+      updateCounter(filtered);
       return;
     }
-
     empty.style.display = "none";
-    frame.style.display = "block";
-    cta.style.display = "inline-flex";
 
-    var p = state.items[state.index];
-
-    function apply() {
-      img.src = p.image || "images/placeholder-generic.svg";
-      img.alt = p.name || "Accesorio Chromea";
-      img.classList.toggle("is-out", !p.inStock);
-
-      if (!p.inStock) {
-        badge.style.display = "inline-block";
-      } else {
-        badge.style.display = "none";
-      }
-
-      counter.textContent = (state.index + 1) + " / " + state.items.length;
-
-      if (p.inStock) {
-        cta.classList.remove("disabled");
-        var msg = p.name
-          ? "Hola, vi el " + p.name + " en el catálogo de Chromea y quiero más información."
-          : (state.config.whatsappDefaultMessage || "Hola, vi el catálogo de Chromea y quiero más información.");
-        cta.href = buildWhatsAppLink(state.config, msg);
-        cta.textContent = "Pedir por WhatsApp";
-      } else {
-        cta.classList.add("disabled");
-        cta.textContent = "Agotado";
-      }
-
-      img.classList.remove("is-fading");
-    }
-
-    if (animate) {
-      img.classList.add("is-fading");
-      setTimeout(apply, 160);
-    } else {
-      apply();
-    }
-  }
-
-  function wireStageControls() {
-    var frame = document.getElementById("stage-frame");
-    var prevBtn = document.getElementById("stage-prev");
-    var nextBtn = document.getElementById("stage-next");
-    if (!frame) return;
-
-    prevBtn.addEventListener("click", function (e) { e.stopPropagation(); go(-1); });
-    nextBtn.addEventListener("click", function (e) { e.stopPropagation(); go(1); });
-
-    // Tap en la mitad izquierda/derecha de la imagen para pasar, como en historias
-    frame.addEventListener("click", function (e) {
-      var rect = frame.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      if (x < rect.width / 2) go(-1); else go(1);
+    filtered.forEach(function (p) {
+      track.appendChild(slideEl(p, state.config));
     });
 
-    // Swipe en móvil
-    var startX = null;
-    frame.addEventListener("touchstart", function (e) {
-      startX = e.touches[0].clientX;
-    }, { passive: true });
-    frame.addEventListener("touchend", function (e) {
-      if (startX === null) return;
-      var deltaX = e.changedTouches[0].clientX - startX;
-      startX = null;
-      if (Math.abs(deltaX) > 40) {
-        if (deltaX < 0) go(1); else go(-1);
-      }
-    }, { passive: true });
+    updateCounter(filtered);
+    wireCounterScroll(filtered.length);
+  }
 
-    // Flechas del teclado
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") go(-1);
-      if (e.key === "ArrowRight") go(1);
+  function wireCounterScroll(total) {
+    var track = document.getElementById("carousel-track");
+    var counter = document.getElementById("carousel-counter");
+    if (!track || !counter) return;
+
+    var ticking = false;
+    track.onscroll = function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var slide = track.querySelector(".carousel-slide");
+        if (slide) {
+          var step = slide.offsetWidth + 22; // gap
+          var idx = Math.round(track.scrollLeft / step) + 1;
+          idx = Math.max(1, Math.min(total, idx));
+          counter.textContent = idx + " / " + total;
+        }
+        ticking = false;
+      });
+    };
+  }
+
+  function wireArrows() {
+    var track = document.getElementById("carousel-track");
+    var prev = document.getElementById("carousel-prev");
+    var next = document.getElementById("carousel-next");
+    if (!track || !prev || !next) return;
+
+    function step() {
+      var slide = track.querySelector(".carousel-slide");
+      return slide ? slide.offsetWidth + 22 : 300;
+    }
+
+    prev.addEventListener("click", function () {
+      track.scrollBy({ left: -step(), behavior: "smooth" });
+    });
+    next.addEventListener("click", function () {
+      track.scrollBy({ left: step(), behavior: "smooth" });
     });
   }
 
   function init() {
-    wireStageControls();
+    var lbClose = document.getElementById("lightbox-close");
+    if (lbClose) lbClose.addEventListener("click", closeLightbox);
+    var lb = document.getElementById("lightbox");
+    if (lb) lb.addEventListener("click", function (e) { if (e.target === lb) closeLightbox(); });
+
+    var search = document.getElementById("search-input");
+    if (search) {
+      search.addEventListener("input", function (e) {
+        state.query = e.target.value;
+        renderCarousel();
+      });
+    }
+
+    wireArrows();
 
     Promise.all([
       fetch("data/config.json").then(function (r) { return r.json(); }),
@@ -220,15 +255,15 @@
       });
       applyConfig(state.config);
       renderChips(uniqueCategories(state.products));
-      rebuildItems();
-      renderStage(false);
+      renderCarousel();
     }).catch(function (err) {
-      var frame = document.getElementById("stage-frame");
-      var empty = document.getElementById("empty-state");
-      if (frame) frame.style.display = "none";
-      if (empty) {
-        empty.style.display = "block";
-        empty.textContent = "No se pudo cargar el catálogo. Si estás probando el sitio en tu computador, ábrelo con un servidor local (ver README) en lugar de abrir el archivo directamente.";
+      var track = document.getElementById("carousel-track");
+      if (track) {
+        track.innerHTML = "";
+        var msg = document.createElement("div");
+        msg.className = "empty-state";
+        msg.textContent = "No se pudo cargar el catálogo. Si estás probando el sitio en tu computador, ábrelo con un servidor local (ver README) en lugar de abrir el archivo directamente.";
+        track.appendChild(msg);
       }
       console.error("Error cargando catálogo:", err);
     });
