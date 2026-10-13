@@ -126,5 +126,13 @@
     "image": "images/products/anillo-ondas.jpg",
     "inStock": true,
     "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-set-x3-plateado",
+    "name": "Set x3 Plateado",
+    "category": "Aretes",
+    "image": "images/products/aretes-set-x3-plateado-1791920351919.png",
+    "inStock": true,
+    "createdAt": "2026-10-13"
   }
 ]
