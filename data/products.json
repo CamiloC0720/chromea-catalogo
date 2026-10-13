@@ -1,19 +1,130 @@
 [
-  { "id": "collar-gota", "name": "Collar Gota", "category": "Collares", "image": "images/products/collar-gota.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "collar-doble-plateado", "name": "Collar Doble Plateado", "category": "Collares", "image": "images/products/collar-doble-plateado.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "collar-corbata", "name": "Collar Corbata", "category": "Collares", "image": "images/products/collar-corbata.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "pulsera-delgada", "name": "Pulsera Delgada", "category": "Pulseras", "image": "images/products/pulsera-delgada.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "pulsera-flores", "name": "Pulsera Flores", "category": "Pulseras", "image": "images/products/pulsera-flores.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-set-mini-hoop", "name": "Set Mini Hoop", "category": "Aretes", "image": "images/products/aretes-set-mini-hoop.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-set-x3-plateado", "name": "Set x3 Plateado", "category": "Aretes", "image": "images/products/aretes-set-x3-plateado.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-corazon", "name": "Aretes Corazón", "category": "Aretes", "image": "images/products/aretes-corazon.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-curva", "name": "Aretes Curva", "category": "Aretes", "image": "images/products/aretes-curva.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-flor", "name": "Aretes Flor", "category": "Aretes", "image": "images/products/aretes-flor.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-tipo-nudo", "name": "Aretes Tipo Nudo", "category": "Aretes", "image": "images/products/aretes-tipo-nudo.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-topo-piedra", "name": "Aretes Topo Piedra", "category": "Aretes", "image": "images/products/aretes-topo-piedra.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-topo-triple", "name": "Aretes Topo Triple", "category": "Aretes", "image": "images/products/aretes-topo-triple.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "aretes-tortuga", "name": "Aretes Tortuga", "category": "Aretes", "image": "images/products/aretes-tortuga.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "anillo-corazon", "name": "Anillo Corazón", "category": "Anillos", "image": "images/products/anillo-corazon.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "anillo-espirales", "name": "Anillo Espirales", "category": "Anillos", "image": "images/products/anillo-espirales.jpg", "inStock": true, "createdAt": "2026-10-13" },
-  { "id": "anillo-ondas", "name": "Anillo Ondas", "category": "Anillos", "image": "images/products/anillo-ondas.jpg", "inStock": true, "createdAt": "2026-10-13" }
+  {
+    "id": "collar-gota",
+    "name": "Collar Gota",
+    "category": "Collares",
+    "image": "images/products/collar-gota.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "collar-doble-plateado",
+    "name": "Collar Doble Plateado",
+    "category": "Collares",
+    "image": "images/products/collar-doble-plateado.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "collar-corbata",
+    "name": "Collar Corbata",
+    "category": "Collares",
+    "image": "images/products/collar-corbata.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "pulsera-delgada",
+    "name": "Pulsera Delgada",
+    "category": "Pulseras",
+    "image": "images/products/pulsera-delgada.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "pulsera-flores",
+    "name": "Pulsera Flores",
+    "category": "Pulseras",
+    "image": "images/products/pulsera-flores.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-set-mini-hoop",
+    "name": "Set Mini Hoop",
+    "category": "Aretes",
+    "image": "images/products/aretes-set-mini-hoop.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-corazon",
+    "name": "Aretes Corazón",
+    "category": "Aretes",
+    "image": "images/products/aretes-corazon.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-curva",
+    "name": "Aretes Curva",
+    "category": "Aretes",
+    "image": "images/products/aretes-curva.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-flor",
+    "name": "Aretes Flor",
+    "category": "Aretes",
+    "image": "images/products/aretes-flor.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-tipo-nudo",
+    "name": "Aretes Tipo Nudo",
+    "category": "Aretes",
+    "image": "images/products/aretes-tipo-nudo.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-topo-piedra",
+    "name": "Aretes Topo Piedra",
+    "category": "Aretes",
+    "image": "images/products/aretes-topo-piedra.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-topo-triple",
+    "name": "Aretes Topo Triple",
+    "category": "Aretes",
+    "image": "images/products/aretes-topo-triple.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "aretes-tortuga",
+    "name": "Aretes Tortuga",
+    "category": "Aretes",
+    "image": "images/products/aretes-tortuga.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "anillo-corazon",
+    "name": "Anillo Corazón",
+    "category": "Anillos",
+    "image": "images/products/anillo-corazon.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "anillo-espirales",
+    "name": "Anillo Espirales",
+    "category": "Anillos",
+    "image": "images/products/anillo-espirales.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  },
+  {
+    "id": "anillo-ondas",
+    "name": "Anillo Ondas",
+    "category": "Anillos",
+    "image": "images/products/anillo-ondas.jpg",
+    "inStock": true,
+    "createdAt": "2026-10-13"
+  }
 ]
